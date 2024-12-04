@@ -1,0 +1,3 @@
+[submodule "/home/hdc/dev/hdc/uni-lib/thirdparty/FreeRTOS-Kernel"]
+	path = /home/hdc/dev/hdc/uni-lib/thirdparty/FreeRTOS-Kernel
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git

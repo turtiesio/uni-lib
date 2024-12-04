@@ -1,0 +1,3 @@
+add_executable(freertos_gpio_example freertos_gpio_example.c freertos_hooks.c)
+target_link_libraries(freertos_gpio_example PRIVATE uni_lib_hal freertos)
+target_include_directories(freertos_gpio_example PRIVATE ${CMAKE_SOURCE_DIR}/include)

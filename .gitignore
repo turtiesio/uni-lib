@@ -1,0 +1,110 @@
+# Build directories
+build/
+build_*/
+cmake-build-*/
+
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.bin
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile.in
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - CLion
+.idea/
+*.iml
+*.iws
+
+# IDE - Eclipse
+.project
+.cproject
+.settings/
+
+# STM32CubeIDE
+.mxproject
+.launch
+
+# Backup files
+*~
+*.bak
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python virtual environment (if using Python tools)
+venv/
+env/
+.env/
+
+# Dependency directories
+vendor/
+third_party/downloaded/
+
+# Log files
+*.log
+log/
+logs/
+
+# Project specific ignores
+# Add any project-specific files or directories to ignore here
