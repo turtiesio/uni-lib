@@ -8,7 +8,7 @@
 #define configTICK_RATE_HZ 1000
 #define configMAX_PRIORITIES 5
 // #define configMINIMAL_STACK_SIZE ((unsigned short)128)
-#define configMINIMAL_STACK_SIZE (PTHREAD_STACK_MIN)  /* Increased for Linux */
+#define configMINIMAL_STACK_SIZE (PTHREAD_STACK_MIN) /* Increased for Linux */
 #define configMAX_TASK_NAME_LEN 16
 #define configUSE_16_BIT_TICKS 0
 #define configIDLE_SHOULD_YIELD 1
@@ -29,7 +29,8 @@
 /* Memory allocation related definitions. */
 #define configSUPPORT_STATIC_ALLOCATION 1
 #define configSUPPORT_DYNAMIC_ALLOCATION 1
-#define configTOTAL_HEAP_SIZE ((size_t)(1024 * 1024))  /* Increased heap size */
+#define configTOTAL_HEAP_SIZE ((size_t)(1024 * 1024)) /* Increased heap size   \
+                                                       */
 #define configAPPLICATION_ALLOCATED_HEAP 0
 
 /* Hook function related definitions. */

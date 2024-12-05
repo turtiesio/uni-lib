@@ -46,8 +46,8 @@ int main(void) {
 
   // Create LED control task
   BaseType_t result =
-      xTaskCreate(vLedControlTask, "LED_Task", configMINIMAL_STACK_SIZE * 2, NULL,
-                  tskIDLE_PRIORITY + 1, &led_task_handle);
+      xTaskCreate(vLedControlTask, "LED_Task", configMINIMAL_STACK_SIZE * 2,
+                  NULL, tskIDLE_PRIORITY + 1, &led_task_handle);
 
   if (result != pdPASS) {
     printf("Failed to create LED task\n");

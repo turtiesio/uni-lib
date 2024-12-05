@@ -94,5 +94,7 @@ setup-stm32:
 	@which arm-none-eabi-gcc >/dev/null || sudo apt-get install -y gcc-arm-none-eabi
 	@echo "STM32 development environment setup complete"
 
+tree:
+	@tree -I 'thirdparty|build|.git'
 
 .PRECIOUS: $(BUILD_DIR)/% $(BUILD_DIR_STM32)/%

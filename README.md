@@ -18,14 +18,10 @@ uni-lib/
 ├── CMakeLists.txt                 # Main CMake configuration
 ├── src/
 │   ├── core/                      # Core interfaces and utilities
-│   ├── hal/                       # Hardware Abstraction Layer
-│   │   ├── interface/            # HAL interfaces
-│   │   ├── stm32/               # STM32 implementation
-│   │   └── linux/               # Linux/RPi implementation
-│   └── drivers/                   # Peripheral drivers
-│       ├── gpio/
-│       ├── i2c/
-│       └── spi/
+│   └── hal/                       # Hardware Abstraction Layer
+│       ├── interface/            # HAL interfaces
+│       ├── stm32/               # STM32 implementation
+│       └── linux/               # Linux/RPi implementation
 ├── include/                       # Public headers
 │   ├── config/                   # Platform-specific configs
 │   └── hal/                     # HAL interfaces

@@ -20,6 +20,7 @@ static bool linux_gpio_init(gpio_handle_t *self, const gpio_config_t *config) {
 
   linux_gpio_data_t *hw = (linux_gpio_data_t *)self->hw_handle;
   hw->pin_number = config->pin;
+  self->active_high = config->active_high; // Store active logic configuration
 
   // Export GPIO
   char cmd[64];
@@ -33,6 +34,64 @@ static bool linux_gpio_init(gpio_handle_t *self, const gpio_config_t *config) {
   system(cmd);
 
   return true;
+}
+
+static bool linux_gpio_deinit(gpio_handle_t *self) {
+  if (!self || !self->hw_handle)
+    return false;
+
+  linux_gpio_data_t *hw = (linux_gpio_data_t *)self->hw_handle;
+  char cmd[64];
+  snprintf(cmd, sizeof(cmd), "echo %d > /sys/class/gpio/unexport",
+           hw->pin_number);
+  system(cmd);
+
+  return true;
+}
+
+static bool linux_gpio_activate(gpio_handle_t *self) {
+  if (!self || !self->hw_handle)
+    return false;
+
+  linux_gpio_data_t *hw = (linux_gpio_data_t *)self->hw_handle;
+  char cmd[64];
+  snprintf(cmd, sizeof(cmd), "echo %d > /sys/class/gpio/gpio%d/value",
+           self->active_high ? 1 : 0, hw->pin_number);
+  system(cmd);
+
+  return true;
+}
+
+static bool linux_gpio_deactivate(gpio_handle_t *self) {
+  if (!self || !self->hw_handle)
+    return false;
+
+  linux_gpio_data_t *hw = (linux_gpio_data_t *)self->hw_handle;
+  char cmd[64];
+  snprintf(cmd, sizeof(cmd), "echo %d > /sys/class/gpio/gpio%d/value",
+           self->active_high ? 0 : 1, hw->pin_number);
+  system(cmd);
+
+  return true;
+}
+
+static bool linux_gpio_is_active(gpio_handle_t *self) {
+  if (!self || !self->hw_handle)
+    return false;
+
+  linux_gpio_data_t *hw = (linux_gpio_data_t *)self->hw_handle;
+  char path[64], value;
+  snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/value", hw->pin_number);
+
+  FILE *fp = fopen(path, "r");
+  if (!fp)
+    return false;
+
+  value = fgetc(fp);
+  fclose(fp);
+
+  bool pin_high = (value == '1');
+  return self->active_high ? pin_high : !pin_high;
 }
 
 static bool linux_gpio_write(gpio_handle_t *self, bool state) {
@@ -67,6 +126,19 @@ static bool linux_gpio_read(gpio_handle_t *self) {
   return value == '1';
 }
 
+static bool linux_gpio_toggle(gpio_handle_t *self) {
+  if (!self || !self->hw_handle)
+    return false;
+
+  linux_gpio_data_t *hw = (linux_gpio_data_t *)self->hw_handle;
+  char cmd[64];
+  snprintf(cmd, sizeof(cmd), "echo toggle > /sys/class/gpio/gpio%d/edge",
+           hw->pin_number);
+  system(cmd);
+
+  return true;
+}
+
 static bool linux_gpio_create(gpio_handle_t *handle) {
   if (!handle)
     return false;
@@ -75,11 +147,13 @@ static bool linux_gpio_create(gpio_handle_t *handle) {
   if (!hw)
     return false;
 
-  memset(hw, 0, sizeof(linux_gpio_data_t));
   handle->hw_handle = hw;
-
-  // Initialize function pointers
   handle->init = linux_gpio_init;
+  handle->deinit = linux_gpio_deinit;
+  handle->activate = linux_gpio_activate;
+  handle->deactivate = linux_gpio_deactivate;
+  handle->is_active = linux_gpio_is_active;
+  handle->toggle = linux_gpio_toggle;
   handle->write = linux_gpio_write;
   handle->read = linux_gpio_read;
 

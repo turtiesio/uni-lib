@@ -12,6 +12,7 @@ typedef struct {
   bool is_output;
   bool pull_up;
   bool pull_down;
+  bool active_high;        // Added to specify active high/low logic
   void *platform_specific; // Platform-specific configuration
 } gpio_config_t;
 
@@ -19,13 +20,20 @@ typedef struct {
  * GPIO Handle structure following OOP pattern
  */
 typedef struct gpio_handle {
-  void *hw_handle; // Platform-specific hardware handle
+  void *hw_handle;  // Platform-specific hardware handle
+  bool active_high; // Store the active logic configuration
 
   // Methods (function pointers for OOP)
   bool (*init)(struct gpio_handle *self, const gpio_config_t *config);
   bool (*deinit)(struct gpio_handle *self);
+
   bool (*write)(struct gpio_handle *self, bool state);
   bool (*read)(struct gpio_handle *self);
+
+  bool (*activate)(struct gpio_handle *self);
+  bool (*deactivate)(struct gpio_handle *self);
+  bool (*is_active)(struct gpio_handle *self);
+
   bool (*toggle)(struct gpio_handle *self);
 
   // Optional interrupt support

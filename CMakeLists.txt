@@ -29,6 +29,7 @@ add_library(freertos STATIC
     ${FREERTOS_HEAP}
     ${FREERTOS_PORT_DIR}/port.c
     ${FREERTOS_PORT_DIR}/utils/wait_for_event.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/freertos_hooks.c
 )
 
 target_include_directories(freertos PUBLIC
@@ -42,13 +43,51 @@ target_link_libraries(freertos PUBLIC pthread)
 # Define source directories
 set(CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 set(HAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/hal)
-set(DRIVERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers)
+set(COMPONENTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/components)
+set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 # Include directories
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+# Create components library
+add_library(components STATIC
+    ${COMPONENTS_DIR}/button.c
+)
+
+target_link_libraries(components PUBLIC freertos)
+
+if(ENABLE_TESTS)
+    # Add Unity testing framework
+    add_library(unity STATIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/Unity/src/unity.c
+    )
+    target_include_directories(unity PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/Unity/src
+    )
+
+    # Add test mocks
+    add_library(test_mocks STATIC
+        ${TESTS_DIR}/mocks/gpio_mock.c
+    )
+
+    # Add button test
+    add_executable(test_button
+        ${TESTS_DIR}/test_button.c
+    )
+    target_link_libraries(test_button PRIVATE
+        unity
+        components
+        test_mocks
+        freertos
+    )
+
+    # Enable testing
+    enable_testing()
+    add_test(NAME test_button COMMAND test_button)
+endif()
 
 # Add subdirectories based on target platform
 if(BUILD_STM32)
@@ -59,7 +98,6 @@ endif()
 
 # Add core library
 add_subdirectory(src/core)
-add_subdirectory(src/drivers)
 
 # Build examples if enabled
 if(ENABLE_EXAMPLES)
@@ -72,6 +110,6 @@ endif()
 
 # Build tests if enabled
 if(ENABLE_TESTS)
-    enable_testing()
+    # enable_testing() is already called above
     add_subdirectory(tests)
 endif()
